@@ -124,3 +124,28 @@ export const checkEmailService = (email, role) => {
         .catch(err => ToastAndroid.show("Network Request Failed!", ToastAndroid.SHORT))
     return consume;
 }
+
+
+
+
+export const uploadAvatarService = (token, uri, type) => {
+    let myHeadersApiPrivate = new Headers();
+    myHeadersApiPrivate.append("Accept", "multipart/form-data");
+    myHeadersApiPrivate.append("Authorization", `Bearer ${token}`);
+
+    let formData = new FormData();
+
+    formData.append("avatar", {
+        name: uri,
+        uri: uri,
+        type: type,
+    });
+
+    const consume = fetch(`103.189.234.73:8080/api/v1/users/avatars/`, {
+        method: "POST",
+        body: formData,
+        headers: myHeadersApiPrivate,
+    })
+    .then(response => response.json())
+    .catch(err => console.log(err))
+}

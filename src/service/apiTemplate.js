@@ -26,12 +26,12 @@ export const getService = (endpoint) => {
 };
 
 
-export const getWithTokenService = (endpoint,token) => {
+export const getWithTokenService = (token) => {
     let myHeadersApiPrivate = new Headers();
     myHeadersApiPrivate.append("Accept", "application/json");
     myHeadersApiPrivate.append("Authorization", `Bearer ${token}`);
 
-    const consume = fetch(`${baseURL}/${endpoint}`, {
+    const consume = fetch(`http://103.189.234.73:8080/api/v1/users/users_fetch/`, {
         method: "GET",
         headers: myHeadersApiPrivate,
     })
