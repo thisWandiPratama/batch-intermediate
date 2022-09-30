@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, ActivityIndicator, ToastAndroid, Modal, TouchableWithoutFeedback, TouchableNativeFeedback, BackHandler } from 'react-native';
-import { loginService } from "../service/ApiAuthService";
-import { storeToken, storeid } from "../service/token/token";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Login extends Component {
     constructor(props) {
@@ -14,28 +13,47 @@ class Login extends Component {
         };
     }
 
-    login = () => {
-        alert("login")
-        // this.setState({ is_Loading: true });
-        // const data = {
-        //     email: this.state.email,
-        //     password: this.state.password,
-        // }
-        // loginService(data)
-        //     .then(result => {
-        //         storeToken(result.data.token);
-        //         storeid(result.data.id);
-        //         if (result.meta.status == "success") {
-        //             this.props.navigation.replace("Home")
-        //             ToastAndroid.show(result.meta.message, ToastAndroid.LONG)
-        //         }else{
-        //             alert("Email atau Password Anda Salah")
-        //         }
-        //         result.meta.status == "error" ? ToastAndroid.show("password atau email anda salah!", ToastAndroid.LONG) : ToastAndroid.show(result.meta.message, ToastAndroid.LONG);
-        //     })
-        //     .finally(() => this.setState({ is_Loading: false }))
-        // return false;
+    login = async () => {
+        this.setState({ is_Loading: true })
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "email": this.state.email,
+            "password": this.state.password
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+
+        fetch("http://103.189.234.73:8080/api/v1/users/login/", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.meta.status == "success") {
+                    this.storeToken(result.data.token)
+                    this.setState({ is_Loading: false })
+                    this.props.navigation.navigate("Home")
+                    alert(result.meta.message)
+                } else {
+                    this.setState({ is_Loading: false })
+                    alert(result.meta.message)
+                }
+
+            })
+            .catch(error => {
+                this.setState({ is_Loading: false })
+                console.log('error', error)
+            });
     }
+
+    storeToken = async (token) => {
+        await AsyncStorage.setItem("token", token);
+    };
 
     render() {
         return (

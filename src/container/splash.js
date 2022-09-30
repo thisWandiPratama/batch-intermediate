@@ -16,21 +16,21 @@ class Splah extends Component {
     }
 
     getDataToken = async () => {
-        // try {
-        //   const value = await AsyncStorage.getItem('token')
-        //   if(value !== null) {
-        //     this.props.navigation.replace('Home')
-        //   }
-        //   else{
-        //     this.props.navigation.replace('Login')
-        //   }
-        // } catch(e) {
-        //     this.props.navigation.replace('Login')
-        // }
-
-        setTimeout(() => {
+        try {
+          const value = await AsyncStorage.getItem('token')
+          if(value !== null) {
+            this.props.navigation.replace('Home')
+          }
+          else{
             this.props.navigation.replace('Login')
-        }, 2000);
+          }
+        } catch(e) {
+            this.props.navigation.replace('Login')
+        }
+
+        // setTimeout(() => {
+        //     this.props.navigation.replace('Login')
+        // }, 2000);
     }
 
 
